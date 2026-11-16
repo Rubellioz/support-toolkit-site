@@ -1,7 +1,7 @@
 # Domain migration: toolkit.rubenmuller.nl → support-toolkit.nl
 
-**Do not start until `support-toolkit.nl` is registered and under your control.** Until then nothing in the build
-references it (the build fails if it does).
+Status: `VITE_SITE_URL` is set to `https://support-toolkit.nl`. The steps below document the move from
+`toolkit.rubenmuller.nl`.
 
 ## What depends on the domain
 
@@ -29,14 +29,12 @@ Only static files written at build time: `index.html` and `en/index.html` (canon
    ```bash
    npm run verify-dist
    ```
-6. **Redirects (optional, recommended).** Once the new domain works, redirect the old host. Add to the **old**
-   domain's Apache config in Plesk (Apache & nginx Settings → Additional directives), not to the shared `.htaccess`:
-   ```apache
-   RewriteEngine On
-   RewriteCond %{HTTP_HOST} ^toolkit\.rubenmuller\.nl$ [NC]
-   RewriteRule ^ https://support-toolkit.nl%{REQUEST_URI} [R=301,L]
-   ```
-   Also redirect `www.support-toolkit.nl` → `support-toolkit.nl` (Plesk: *Preferred domain*).
+6. **Redirects.** Once the new domain works, redirect the old host with its path intact:
+   - In Plesk, open **toolkit.rubenmuller.nl → Git** and set the deployment mode to **Disabled** (or remove the repository).
+   - In **File Manager**, empty the document root of `toolkit.rubenmuller.nl` and upload
+     [`docs/old-domain-redirect.htaccess`](old-domain-redirect.htaccess) there as **`.htaccess`**.
+   - Keep the subdomain and its certificate, so `https://toolkit.rubenmuller.nl/...` links keep working (they redirect).
+   - Set **Hosting Settings → Preferred domain** of `support-toolkit.nl` to `support-toolkit.nl` so `www.` redirects too.
 7. **SEO & analytics.** Add `support-toolkit.nl` to Google Search Console, submit the sitemap, and use *Change of
    address* from the old property. Analytics picks up the new hostname automatically (`data-domain` is set at runtime);
    add the new domain in your analytics dashboard. If the analytics script lives on another host, ensure it is

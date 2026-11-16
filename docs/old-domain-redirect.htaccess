@@ -1,0 +1,11 @@
+# Permanent redirect: toolkit.rubenmuller.nl → support-toolkit.nl
+#
+# Use as the ONLY file (named .htaccess) in the document root of toolkit.rubenmuller.nl, after the Git
+# deployment for that subdomain has been switched off. Because no other files exist there, every request
+# (pages, /en/, assets, deep links) reaches Apache and is redirected with its path intact:
+#   https://toolkit.rubenmuller.nl/en/#ssl-monitor → https://support-toolkit.nl/en/#ssl-monitor
+# Let's Encrypt validation (/.well-known/) is left alone so the old certificate keeps renewing.
+
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule ^ https://support-toolkit.nl%{REQUEST_URI} [R=301,L]

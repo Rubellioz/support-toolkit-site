@@ -3,8 +3,8 @@
 The public product site for Support Toolkit: a premium, light-mode scrollytelling page where a pinned, realistic
 dashboard demonstrates each module as the visitor scrolls.
 
-- **Live (development / staging):** `https://toolkit.rubenmuller.nl`
-- **Planned production domain:** `support-toolkit.nl` (not yet available, see [docs/DOMAIN-MIGRATION.md](docs/DOMAIN-MIGRATION.md))
+- **Live:** `https://support-toolkit.nl`
+- **Previous domain:** `toolkit.rubenmuller.nl`, redirects permanently to the new domain (see [docs/DOMAIN-MIGRATION.md](docs/DOMAIN-MIGRATION.md))
 
 This repository holds the **marketing site only**. The Support Toolkit application (PHP, `Rubellioz/support-toolkit`)
 is a separate repository with its own deployment and is not changed by anything here.
