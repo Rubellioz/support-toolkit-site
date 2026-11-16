@@ -1,5 +1,6 @@
 import { Globe, Server, MapPin, Copy } from 'lucide-react';
-import { domainLookup as d } from '../../../data/domain';
+import { getDomainLookup } from '../../../data/domain';
+import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, QueryBar, StatusIcon } from '../primitives';
 
 const typeColor: Record<string, string> = {
@@ -12,15 +13,17 @@ const typeColor: Record<string, string> = {
 };
 
 export function DomainView() {
+  const d = getDomainLookup(useLang());
+  const t = useT().dash;
   return (
     <div className="flex h-full flex-col">
-      <PageHead crumb="Domain & DNS" title="Domain Intelligence">
-        <QueryBar icon={<Globe size={14} aria-hidden />} value={d.query} action="Look up" />
+      <PageHead crumb={t.nav.domain.crumb} title={t.nav.domain.label}>
+        <QueryBar icon={<Globe size={14} aria-hidden />} value={d.query} action={t.domain.lookup} />
       </PageHead>
 
       <div className="grid min-h-0 flex-1 grid-cols-[300px_1fr] gap-3">
         <div className="flex flex-col gap-3">
-          <Card title="Domain overview" action={<Pill status="ok">Active</Pill>}>
+          <Card title={t.domain.overview} action={<Pill status="ok">{t.domain.active}</Pill>}>
             <dl className="px-4 py-1.5">
               {d.overview.map((o) => (
                 <div key={o.label} className="flex justify-between gap-3 border-b border-line-2 py-2 last:border-0" data-reveal>
@@ -30,7 +33,7 @@ export function DomainView() {
               ))}
             </dl>
           </Card>
-          <Card title="IP information" action={<MapPin size={14} className="text-subtle" aria-hidden />} data-focus="ip-info">
+          <Card title={t.domain.ip} action={<MapPin size={14} className="text-subtle" aria-hidden />} data-focus="ip-info">
             <dl className="px-4 py-1.5">
               {d.ip.map((o) => (
                 <div key={o.label} className="flex justify-between gap-3 border-b border-line-2 py-2 last:border-0" data-reveal>
@@ -43,7 +46,7 @@ export function DomainView() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-3">
-          <Card title="Nameservers" action={<span className="text-[11.5px] text-ok">3 of 3 responding</span>}>
+          <Card title={t.domain.nameservers} action={<span className="text-[11.5px] text-ok">{t.domain.responding}</span>}>
             <div className="grid grid-cols-3 gap-2 p-3">
               {d.nameservers.map((n) => (
                 <div key={n.host} className="flex items-center gap-2.5 rounded-[10px] border border-line-2 bg-canvas px-3 py-2.5" data-reveal>
@@ -61,18 +64,18 @@ export function DomainView() {
           </Card>
 
           <Card
-            title="DNS records"
-            action={<span className="text-[11.5px] text-subtle">{d.records.length} records · authoritative</span>}
+            title={t.domain.records}
+            action={<span className="text-[11.5px] text-subtle">{t.domain.recordsMeta}</span>}
             className="min-h-0 flex-1"
             data-focus="dns-records"
           >
             <table className="w-full table-fixed text-left">
               <thead>
                 <tr className="border-b border-line-2">
-                  <th className="dash-th w-[84px] py-2 pl-4">Type</th>
-                  <th className="dash-th w-[86px] py-2">Name</th>
-                  <th className="dash-th py-2">Value</th>
-                  <th className="dash-th w-[70px] py-2 pr-4 text-right">TTL</th>
+                  <th className="dash-th w-[84px] py-2 pl-4">{t.domain.cols[0]}</th>
+                  <th className="dash-th w-[86px] py-2">{t.domain.cols[1]}</th>
+                  <th className="dash-th py-2">{t.domain.cols[2]}</th>
+                  <th className="dash-th w-[70px] py-2 pr-4 text-right">{t.domain.cols[3]}</th>
                 </tr>
               </thead>
               <tbody>
@@ -96,7 +99,7 @@ export function DomainView() {
           </Card>
 
           <div className="dash-card flex items-center gap-3 px-4 py-2.5">
-            <span className="text-[12px] font-semibold">Propagation</span>
+            <span className="text-[12px] font-semibold">{t.domain.propagation}</span>
             <div className="flex flex-1 items-center gap-1.5">
               {d.propagation.map((p) => (
                 <span
@@ -109,7 +112,7 @@ export function DomainView() {
                 </span>
               ))}
             </div>
-            <span className="text-[11.5px] text-muted">5 / 6 updated</span>
+            <span className="text-[11.5px] text-muted">{t.domain.updated}</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-// Shared helpers for domain-aware SEO files. Used by vite.config.ts and the retarget script.
+// Shared helpers for domain-aware SEO files. Used by vite.config.ts, prerender and the retarget script.
 
 /** Validates and normalizes a site URL: https origin (http only for localhost), no trailing slash. */
 export function normalizeSiteUrl(raw) {
@@ -17,19 +17,24 @@ export function normalizeSiteUrl(raw) {
   return url.origin;
 }
 
-/** Public, indexable paths. Single-page site: sections are anchors on "/". */
-export const PAGES = [{ path: '/', changefreq: 'monthly', priority: '1.0' }];
+/** Public, indexable pages: one per language. Sections are anchors on each page. */
+export const PAGES = [
+  { path: '/', lang: 'nl' },
+  { path: '/en/', lang: 'en' },
+];
 
 export function robotsTxt(siteUrl, noindex = false) {
-  return noindex
-    ? 'User-agent: *\nDisallow: /\n'
-    : `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
+  return noindex ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
 }
 
 export function sitemapXml(siteUrl, lastmod = new Date().toISOString().slice(0, 10)) {
+  const alternates = [
+    ...PAGES.map((p) => `    <xhtml:link rel="alternate" hreflang="${p.lang}" href="${siteUrl}${p.path}" />`),
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/" />`,
+  ].join('\n');
   const urls = PAGES.map(
     (p) =>
-      `  <url>\n    <loc>${siteUrl}${p.path}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${p.changefreq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>`,
+      `  <url>\n    <loc>${siteUrl}${p.path}</loc>\n${alternates}\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${p.path === '/' ? '1.0' : '0.9'}</priority>\n  </url>`,
   ).join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls}\n</urlset>\n`;
 }

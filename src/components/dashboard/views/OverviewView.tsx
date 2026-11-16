@@ -1,5 +1,6 @@
 import { Globe, ShieldCheck, ScanSearch, ShieldAlert, Handshake, ArrowUpRight, type LucideIcon } from 'lucide-react';
-import { kpis, modules, activity, expiryBars } from '../../../data/overview';
+import { getOverview, expiryBars } from '../../../data/overview';
+import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, StatusIcon } from '../primitives';
 
 const moduleIcons: Record<string, LucideIcon> = {
@@ -11,13 +12,16 @@ const moduleIcons: Record<string, LucideIcon> = {
 };
 
 export function OverviewView() {
+  const lang = useLang();
+  const t = useT().dash.overview;
+  const { kpis, modules, activity } = getOverview(lang);
   const max = Math.max(...expiryBars);
   return (
     <div className="flex h-full flex-col">
-      <PageHead crumb="Monday, 16 November" title="Good morning, support team">
+      <PageHead crumb={t.date} title={t.greeting}>
         <span className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-[12px] font-medium text-ink-2 shadow-[var(--shadow-card)]">
           <span className="live-dot size-2 rounded-full bg-ok" />
-          All monitors operational
+          {t.status}
         </span>
       </PageHead>
 
@@ -57,7 +61,7 @@ export function OverviewView() {
       </div>
 
       <div className="mt-3 grid min-h-0 flex-1 grid-cols-[1.55fr_1fr] gap-3">
-        <Card title="Recent activity" action={<span className="flex items-center gap-1 text-[11.5px] font-medium text-blue">View all <ArrowUpRight size={12} aria-hidden /></span>}>
+        <Card title={t.activity} action={<span className="flex items-center gap-1 text-[11.5px] font-medium text-blue">{t.viewAll} <ArrowUpRight size={12} aria-hidden /></span>}>
           <ul className="flex-1 divide-y divide-line-2 px-4">
             {activity.map((a) => (
               <li key={a.time + a.target} className="flex items-center gap-3 py-[9px]" data-reveal>
@@ -71,7 +75,7 @@ export function OverviewView() {
             ))}
           </ul>
         </Card>
-        <Card title="Certificates expiring" action={<Pill status="warn">Next 8 weeks</Pill>}>
+        <Card title={t.expiring} action={<Pill status="warn">{t.nextWeeks}</Pill>}>
           <div className="flex flex-1 items-end gap-2.5 px-4 pb-3 pt-4">
             {expiryBars.map((v, i) => (
               <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
@@ -81,12 +85,12 @@ export function OverviewView() {
                   className="w-full origin-bottom rounded-[6px] bg-gradient-to-t from-blue to-cyan"
                   style={{ height: `${(v / max) * 130}px`, opacity: i === 0 ? 1 : 0.55 + (v / max) * 0.45 }}
                 />
-                <span className="text-[10.5px] text-subtle">W{i + 47 > 52 ? i - 5 : i + 47}</span>
+                <span className="text-[10.5px] text-subtle">{t.week}{i + 47 > 52 ? i - 5 : i + 47}</span>
               </div>
             ))}
           </div>
           <p className="border-t border-line-2 px-4 py-2.5 text-[11.5px] text-muted">
-            <span className="font-semibold text-ink">26 renewals</span> due in the next 8 weeks.
+            <span className="font-semibold text-ink">{t.renewals}</span> {t.renewalsTail}
           </p>
         </Card>
       </div>

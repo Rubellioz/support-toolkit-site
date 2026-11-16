@@ -1,8 +1,15 @@
 import { Check } from 'lucide-react';
-import { mediation as m, eur } from '../../../data/mediation';
+import { getMediation } from '../../../data/mediation';
+import { formatEur } from '../../../i18n/format';
+import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill } from '../primitives';
 
 export function MediationView() {
+  const lang = useLang();
+  const m = getMediation(lang);
+  const t = useT().dash;
+  const mt = t.mediation;
+  const eur = (n: number, digits = 0) => formatEur(n, lang, digits);
   const { conservative, market, premium } = m.valuation;
   const lo = 1000;
   const hi = 8000;
@@ -12,8 +19,8 @@ export function MediationView() {
 
   return (
     <div className="flex h-full flex-col">
-      <PageHead crumb="Domains" title={<>Domain Mediation <span className="mono text-[15px] font-medium text-muted">· {m.domain}</span></>}>
-        <Pill status="info">Dossier #2026-031 · in negotiation</Pill>
+      <PageHead crumb={t.nav.mediation.crumb} title={<>{t.nav.mediation.label} <span className="mono text-[15px] font-medium text-muted">· {m.domain}</span></>}>
+        <Pill status="info">{mt.dossier}</Pill>
       </PageHead>
 
       <div className="dash-card px-6 pb-4 pt-5" data-focus="mediation-stages">
@@ -44,16 +51,16 @@ export function MediationView() {
       </div>
 
       <div className="mt-3 grid min-h-0 flex-1 grid-cols-[1fr_1.25fr_0.85fr] gap-3">
-        <Card title="Valuation" action={<Pill status="warn">{m.valuation.confidence} confidence</Pill>} data-focus="mediation-valuation">
+        <Card title={mt.valuation} action={<Pill status="warn">{m.valuation.confidence} {mt.confidence}</Pill>} data-focus="mediation-valuation">
           <div className="space-y-3 p-4">
             {[
-              { l: 'Conservative', v: conservative, c: 'text-muted' },
-              { l: 'Market value', v: market, c: 'text-ink' },
-              { l: 'Premium', v: premium, c: 'text-muted' },
+              { l: mt.conservative, v: conservative, c: 'text-muted', main: false },
+              { l: mt.market, v: market, c: 'text-ink', main: true },
+              { l: mt.premium, v: premium, c: 'text-muted', main: false },
             ].map((x) => (
               <div key={x.l} className="flex items-baseline justify-between" data-reveal>
                 <span className="text-[12px] text-muted">{x.l}</span>
-                <span className={`tabular font-semibold tracking-[-0.02em] ${x.l === 'Market value' ? 'text-[22px]' : 'text-[15px]'} ${x.c}`}>{eur(x.v)}</span>
+                <span className={`tabular font-semibold tracking-[-0.02em] ${x.main ? 'text-[22px]' : 'text-[15px]'} ${x.c}`}>{eur(x.v)}</span>
               </div>
             ))}
             <div className="pt-2" data-reveal>
@@ -67,15 +74,15 @@ export function MediationView() {
               </div>
             </div>
             <p className="border-t border-line-2 pt-3 text-[11.5px] text-muted" data-reveal>
-              Based on {m.valuation.basis}. Asking prices and estimates are excluded.
+              {mt.basedOn} {m.valuation.basis}. {mt.basis}
             </p>
           </div>
         </Card>
 
-        <Card title="Offer history" action={<span className="text-[11.5px] text-subtle">Gap narrowed to {eur(1000)}</span>} data-focus="mediation-offers">
+        <Card title={mt.offers} action={<span className="text-[11.5px] text-subtle">{mt.gap} {eur(1000)}</span>} data-focus="mediation-offers">
           <ul className="space-y-1 p-3">
             {m.offers.map((o, i) => {
-              const buyer = o.party === 'Buyer';
+              const buyer = o.buyer;
               return (
                 <li key={i} className="grid grid-cols-[46px_1fr_auto] items-center gap-3 rounded-[10px] px-2 py-[7px]" data-offer>
                   <span className="mono text-[11px] text-subtle">{o.date}</span>
@@ -94,7 +101,7 @@ export function MediationView() {
           </ul>
         </Card>
 
-        <Card title="Fees" action={<span className="text-[11.5px] text-subtle">Estimate</span>}>
+        <Card title={mt.fees} action={<span className="text-[11.5px] text-subtle">{mt.estimate}</span>}>
           <dl className="space-y-2.5 p-4">
             {m.fees.map((f) => (
               <div key={f.label} className="flex justify-between gap-2" data-reveal>
@@ -103,7 +110,7 @@ export function MediationView() {
               </div>
             ))}
             <div className="flex justify-between gap-2 border-t border-line-2 pt-2.5" data-reveal>
-              <dt className="text-[12px] font-semibold">Fee incl. VAT</dt>
+              <dt className="text-[12px] font-semibold">{mt.feeTotal}</dt>
               <dd className="tabular text-[13px] font-semibold">{eur(m.fees[1].value + m.fees[2].value, 2)}</dd>
             </div>
           </dl>

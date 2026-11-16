@@ -12,15 +12,16 @@ DirectoryIndex index.html
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-  # /index.html → / (one canonical URL for the page)
-  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
-  RewriteRule ^index\.html$ / [R=301,L]
+  # /index.html → /  and  /en/index.html → /en/  (one canonical URL per language)
+  RewriteCond %{THE_REQUEST} \s/+(en/)?index\.html[\s?] [NC]
+  RewriteRule ^(en/)?index\.html$ /$1 [R=301,L]
 
   # Hide repository / tooling files if they ever end up in the web root.
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
 </IfModule>
 
-# Single-page site with anchor navigation: no client-side routes exist, so unknown paths get a real 404
+# Two static pages (/ = Dutch, /en/ = English) with anchor navigation. /en without a slash is redirected to
+# /en/ by Apache (DirectorySlash). No client-side routes exist, so unknown paths get a real 404
 # (no SPA catch-all → no soft-404s in search engines). If client routes are added later, replace with:
 #   FallbackResource /index.html
 ErrorDocument 404 /404.html

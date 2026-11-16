@@ -2,18 +2,18 @@ import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MousePointer2 } from 'lucide-react';
-import { chapters, type ViewId } from '../../data/chapters';
-import { DEMO_NOTICE } from '../../data/types';
+import { getChapters, type ViewId } from '../../data/chapters';
+import { useLang, useT } from '../../i18n/context';
 import { navItems } from '../dashboard/nav';
 import { Dashboard, DASH_W, DASH_H } from '../dashboard/Dashboard';
 import { RING_C } from '../dashboard/views/SecurityView';
-import { securityAudit } from '../../data/security';
-import { sslScan } from '../../data/ssl';
+import { SECURITY_SCORE, securityCategoryScores } from '../../data/security';
+import { SSL_TOTAL } from '../../data/ssl';
 import { HeroCopy } from './HeroCopy';
 import { ChapterText } from './ChapterText';
 import { useFitScale, useIsoLayoutEffect } from '../../hooks/useFitScale';
 import { offsetRect, clamp } from '../../lib/geometry';
-import { registerTourNavigator } from '../../lib/tourNav';
+import { registerTourNavigator, registerCurrentAnchor } from '../../lib/tourNav';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,6 +28,8 @@ const NAV_STEP = 36; // sidebar item pitch in dashboard px
  */
 export function ScrollStage() {
   const root = useRef<HTMLElement>(null);
+  const t = useT();
+  const chapters = getChapters(useLang());
   const fit = useRef<HTMLDivElement>(null);
   useFitScale(fit, DASH_W);
 
@@ -112,6 +114,8 @@ export function ScrollStage() {
       gsap.set(q('[data-scan-bar]'), { scaleX: 0 });
       const scanCount = q('[data-scan-count]');
       const scanLabel = q('[data-scan-label]');
+      const scanText = { busy: scanLabel.dataset.busy ?? '', done: scanLabel.dataset.done ?? '' };
+      scanLabel.textContent = scanText.busy;
       scanCount.textContent = '0';
       // Security: empty ring & bars
       const ring = q<SVGCircleElement>('[data-score-ring]');
@@ -183,13 +187,13 @@ export function ScrollStage() {
           tl.to(
             counter,
             {
-              n: sslScan.total,
+              n: SSL_TOTAL,
               duration: dur,
               ease: 'none',
               onUpdate: () => {
                 const n = Math.round(counter.n);
                 scanCount.textContent = String(n);
-                scanLabel.textContent = n >= sslScan.total ? 'Scan complete' : 'Scanning portfolio…';
+                scanLabel.textContent = n >= SSL_TOTAL ? scanText.done : scanText.busy;
               },
             },
             t,
@@ -204,14 +208,14 @@ export function ScrollStage() {
 
         if (ch.view === 'security') {
           const counter = { n: 0 };
-          tl.to(ring, { attr: { 'stroke-dashoffset': RING_C * (1 - securityAudit.score / 100) }, duration: 2.6, ease: 'power2.out' }, start + 1.2);
+          tl.to(ring, { attr: { 'stroke-dashoffset': RING_C * (1 - SECURITY_SCORE / 100) }, duration: 2.6, ease: 'power2.out' }, start + 1.2);
           tl.to(
             counter,
-            { n: securityAudit.score, duration: 2.6, ease: 'power2.out', onUpdate: () => (scoreNum.textContent = String(Math.round(counter.n))) },
+            { n: SECURITY_SCORE, duration: 2.6, ease: 'power2.out', onUpdate: () => (scoreNum.textContent = String(Math.round(counter.n))) },
             start + 1.2,
           );
           qa('[data-cat-bar]').forEach((bar, b) => {
-            tl.to(bar, { scaleX: securityAudit.categories[b].score / 100, duration: 1.4, ease: 'power2.out' }, start + 1.6 + b * 0.18);
+            tl.to(bar, { scaleX: securityCategoryScores[b] / 100, duration: 1.4, ease: 'power2.out' }, start + 1.6 + b * 0.18);
           });
           t = Math.max(t, start + 4);
         }
@@ -246,6 +250,13 @@ export function ScrollStage() {
         animation: tl,
       });
 
+      // Which chapter is on screen (used by the language switch to keep the visitor's place).
+      registerCurrentAnchor(() => {
+        if (window.scrollY > st.end) return null; // past the tour: generic lookup handles the CTA
+        const label = tl.currentLabel();
+        return label && label !== 'top' ? label : '';
+      });
+
       registerTourNavigator((id) => {
         if (tl.labels[id] === undefined) return false;
         const y = st.labelToScroll(id);
@@ -267,6 +278,7 @@ export function ScrollStage() {
     return () => {
       ro.disconnect();
       registerTourNavigator(null);
+      registerCurrentAnchor(null);
       ctx.revert();
       stage.classList.remove('is-ready');
     };
@@ -307,11 +319,11 @@ export function ScrollStage() {
             </div>
           </div>
         </div>
-        <p className="absolute -bottom-7 left-0 right-0 hidden text-center text-[11.5px] text-subtle lg:block">{DEMO_NOTICE.split('.')[0]}.</p>
+        <p className="absolute -bottom-7 left-0 right-0 hidden text-center text-[11.5px] text-subtle lg:block">{t.demoNoticeShort}</p>
       </div>
 
       <div data-hint className="pointer-events-none absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-line bg-white/90 px-3.5 py-1.5 text-[12px] font-medium text-muted shadow-[var(--shadow-float)] backdrop-blur md:flex" aria-hidden>
-        <MousePointer2 size={14} /> Scroll to explore the product
+        <MousePointer2 size={14} /> {t.stage.hint}
       </div>
     </section>
   );

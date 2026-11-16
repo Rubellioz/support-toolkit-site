@@ -30,7 +30,8 @@ Upload the **contents** of `dist/` (including the hidden `.htaccess`) to the doc
 
 ## Routing
 
-The site is one page with anchor navigation (`/#ssl-monitor` …), so no SPA fallback is needed. Unknown paths return a
+The site has two static pages: `/` (Dutch) and `/en/` (English, served from `en/index.html`), each with anchor
+navigation (`/#ssl-monitor` …), so no SPA fallback is needed. Unknown paths return a
 real **404** with `404.html` (no soft-404s). If client-side routes are added later, switch to `FallbackResource /index.html`
 (see the comment in `.htaccess`).
 
@@ -48,6 +49,9 @@ curl -sI http://toolkit.rubenmuller.nl/ | grep -i location           # https://t
 curl -s -o /dev/null -w '%{http_code}\n' https://toolkit.rubenmuller.nl/does-not-exist   # 404
 ```
 ```bash
+curl -s -o /dev/null -w '%{http_code}\n' https://toolkit.rubenmuller.nl/en/        # 200 (English)
+```
+```bash
 curl -s https://toolkit.rubenmuller.nl/robots.txt https://toolkit.rubenmuller.nl/sitemap.xml
 ```
 ```bash
@@ -57,6 +61,6 @@ curl -s https://toolkit.rubenmuller.nl/ | grep -c 'support-toolkit\.nl'   # 0
 curl -sI https://toolkit.rubenmuller.nl/assets/ 2>/dev/null | head -1     # 403/404, no listing
 ```
 
-In a browser: scroll the full tour on desktop, tablet and phone; check the header links, `#security-audit` deep link,
+In a browser: scroll the full tour on desktop, tablet and phone in both languages; use the NL | EN switch; check the header links, `#security-audit` deep link,
 keyboard navigation (Tab from the top: skip link, logo, nav, sign-in) and the OS "reduce motion" setting.
 `npm run build` already checks asset paths, SEO URLs and future-domain references locally.

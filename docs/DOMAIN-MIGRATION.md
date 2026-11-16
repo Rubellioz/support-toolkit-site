@@ -5,8 +5,8 @@ references it (the build fails if it does).
 
 ## What depends on the domain
 
-Only static files written at build time: `index.html` (canonical, `og:url`, `og:image`, `twitter:image`, JSON-LD),
-`robots.txt` and `sitemap.xml`. The JS/CSS bundles, `.htaccess`, `404.html` and all internal links are domain-agnostic.
+Only static files written at build time: `index.html` and `en/index.html` (canonical, `hreflang`, `og:url`,
+`og:image`, `twitter:image`, JSON-LD), `robots.txt` and `sitemap.xml`. The JS/CSS bundles, `.htaccess`, `404.html` and all internal links are domain-agnostic.
 
 ## Steps
 
@@ -24,8 +24,8 @@ Only static files written at build time: `index.html` (canonical, `og:url`, `og:
      ```
    - *Next build* — set `VITE_SITE_URL=https://support-toolkit.nl` in `.env` (or the GitHub Actions variable
      `SITE_URL`) and push; the next deployment carries the new domain.
-5. **Canonical & sitemap.** Check `https://support-toolkit.nl/` source (canonical + `og:url`), `/robots.txt` and
-   `/sitemap.xml` all show the new domain:
+5. **Canonical & sitemap.** Check that `https://support-toolkit.nl/` and `/en/` (canonical, `hreflang`, `og:url`),
+   `/robots.txt` and `/sitemap.xml` all show the new domain:
    ```bash
    npm run verify-dist
    ```
