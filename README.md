@@ -107,7 +107,8 @@ The UI follows the [ui-skills](https://github.com/ibelick/ui-skills) rules `base
 - Motion: only `transform`/`opacity` on large surfaces, `will-change` only while the tour is pinned, looping
   animations pause off-screen, no scroll listeners outside GSAP ScrollTrigger.
 
-Deliberate deviations: GSAP stays the animation library (the skills say not to migrate libraries), and the pinned stage
+Deliberate deviations: the hero keeps its fading grid with a soft blue glow (requested explicitly; static, never
+animated), GSAP stays the animation library (the skills say not to migrate libraries), and the pinned stage
 uses `100svh` instead of `h-dvh` so the pin doesn't re-layout when a mobile toolbar shows or hides.
 
 ## Deployment

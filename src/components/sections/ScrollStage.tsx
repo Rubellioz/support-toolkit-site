@@ -295,6 +295,7 @@ export function ScrollStage() {
 
   return (
     <section ref={root} id="top" className="stage relative h-[100svh] overflow-hidden bg-white" aria-labelledby="hero-title">
+      <StageBackdrop />
 
       <div data-hero className="absolute inset-x-0 top-[calc(var(--hdr)+5svh)] z-10">
         <HeroCopy />
@@ -337,3 +338,17 @@ export function ScrollStage() {
   );
 }
 
+/**
+ * Static depth behind the stage: a fading grid with a soft blue glow.
+ * Deliberate exception to baseline-ui's "no gradients" rule, requested explicitly. It never animates
+ * (fixing-motion-performance) and only uses the single blue accent.
+ */
+function StageBackdrop() {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgb(10_24_52/0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgb(10_24_52/0.045)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_30%,black,transparent)]" />
+      <div className="absolute -top-[20%] left-1/2 h-[70%] w-[80%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(23_101_245/0.12),transparent)]" />
+      <div className="absolute right-[-10%] top-[35%] h-[60%] w-[50%] rounded-full bg-[radial-gradient(closest-side,rgb(23_101_245/0.07),transparent)]" />
+    </div>
+  );
+}
