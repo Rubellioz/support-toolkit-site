@@ -13,12 +13,12 @@ export function Footer() {
         <div>
           <p className="flex items-center gap-2.5">
             <img src="/icon-192.png" alt="" width={28} height={28} className="size-7 rounded-[8px]" loading="lazy" />
-            <span className="text-[15px] font-semibold tracking-[-0.02em]">Support Toolkit</span>
+            <span className="text-[15px] font-semibold">Support Toolkit</span>
           </p>
           <p className="mt-4 max-w-[360px] text-[0.9rem] leading-relaxed text-muted">{t.footer.tagline}</p>
         </div>
         <nav aria-label={t.footer.modules}>
-          <h2 className="text-[12px] font-semibold uppercase tracking-[0.1em] text-subtle">{t.footer.modules}</h2>
+          <h2 className="text-[12px] font-semibold uppercase text-subtle">{t.footer.modules}</h2>
           <ul className="mt-4 space-y-2.5 text-[0.92rem]">
             {chapters.slice(0, 5).map((c) => (
               <li key={c.id}>
@@ -37,7 +37,7 @@ export function Footer() {
           </ul>
         </nav>
         <div>
-          <h2 className="text-[12px] font-semibold uppercase tracking-[0.1em] text-subtle">{t.footer.about}</h2>
+          <h2 className="text-[12px] font-semibold uppercase text-subtle">{t.footer.about}</h2>
           <p className="mt-4 text-[0.85rem] leading-relaxed text-muted">{t.demoNotice}</p>
           {site.appUrl && (
             <a href={site.appUrl} rel="noopener" className="mt-4 inline-block text-[0.92rem] font-medium text-blue hover:underline">

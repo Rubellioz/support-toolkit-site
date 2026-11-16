@@ -2,6 +2,7 @@ import { Globe, ShieldCheck, ScanSearch, ShieldAlert, Handshake, ArrowUpRight, t
 import { getOverview, expiryBars } from '../../../data/overview';
 import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, StatusIcon } from '../primitives';
+import { cn } from '../../../lib/cn';
 
 const moduleIcons: Record<string, LucideIcon> = {
   domain: Globe,
@@ -19,7 +20,7 @@ export function OverviewView() {
   return (
     <div className="flex h-full flex-col">
       <PageHead crumb={t.date} title={t.greeting}>
-        <span className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-[12px] font-medium text-ink-2 shadow-[var(--shadow-card)]">
+        <span className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-[12px] font-medium text-ink-2 shadow-xs">
           <span className="live-dot size-2 rounded-full bg-ok" />
           {t.status}
         </span>
@@ -30,10 +31,10 @@ export function OverviewView() {
           <div key={k.id} className="dash-card p-4" data-reveal>
             <p className="text-[11.5px] font-medium text-muted">{k.label}</p>
             <p className="mt-2 flex items-baseline gap-1.5">
-              <span className="tabular text-[26px] font-semibold tracking-[-0.03em]">{k.value}</span>
+              <span className="tabular-nums text-[26px] font-semibold">{k.value}</span>
               {k.suffix && <span className="text-[13px] text-subtle">{k.suffix}</span>}
             </p>
-            <p className={`mt-1 text-[11.5px] ${k.status === 'warn' ? 'text-warn' : k.status === 'ok' ? 'text-ok' : 'text-subtle'}`}>{k.delta}</p>
+            <p className={cn('mt-1 text-[11.5px]', k.status === 'warn' ? 'text-warn' : k.status === 'ok' ? 'text-ok' : 'text-subtle')}>{k.delta}</p>
           </div>
         ))}
       </div>
@@ -49,9 +50,9 @@ export function OverviewView() {
                 </span>
                 <StatusIcon status={m.status} size={14} />
               </div>
-              <p className="mt-3 text-[12px] font-semibold tracking-[-0.01em]">{m.name}</p>
+              <p className="mt-3 text-[12px] font-semibold">{m.name}</p>
               <p className="mt-1 flex items-baseline gap-1">
-                <span className="tabular text-[17px] font-semibold tracking-[-0.02em]">{m.metric}</span>
+                <span className="tabular-nums text-[17px] font-semibold">{m.metric}</span>
               </p>
               <p className="text-[11px] text-subtle">{m.unit}</p>
               <p className="mt-2 border-t border-line-2 pt-2 text-[11px] text-muted">{m.note}</p>
@@ -79,10 +80,10 @@ export function OverviewView() {
           <div className="flex flex-1 items-end gap-2.5 px-4 pb-3 pt-4">
             {expiryBars.map((v, i) => (
               <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-                <span className="tabular text-[11px] font-medium text-muted">{v}</span>
+                <span className="tabular-nums text-[11px] font-medium text-muted">{v}</span>
                 <div
                   data-bar
-                  className="w-full origin-bottom rounded-[6px] bg-gradient-to-t from-blue to-cyan"
+                  className="w-full origin-bottom rounded-[6px] bg-blue"
                   style={{ height: `${(v / max) * 130}px`, opacity: i === 0 ? 1 : 0.55 + (v / max) * 0.45 }}
                 />
                 <span className="text-[10.5px] text-subtle">{t.week}{i + 47 > 52 ? i - 5 : i + 47}</span>

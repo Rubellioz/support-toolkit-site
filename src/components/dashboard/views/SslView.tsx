@@ -2,6 +2,7 @@ import { RefreshCw, Lock } from 'lucide-react';
 import { getSslScan } from '../../../data/ssl';
 import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, StatusIcon } from '../primitives';
+import { cn } from '../../../lib/cn';
 
 export function SslView() {
   const sslScan = getSslScan(useLang());
@@ -10,7 +11,7 @@ export function SslView() {
   return (
     <div className="flex h-full flex-col">
       <PageHead crumb={t.nav.ssl.crumb} title={t.nav.ssl.label}>
-        <span className="flex h-9 items-center gap-2 rounded-[10px] bg-blue px-3.5 text-[12.5px] font-semibold text-white shadow-[0_6px_14px_-6px_rgb(23_101_245/0.7)]">
+        <span className="flex h-9 items-center gap-2 rounded-[10px] bg-blue px-3.5 text-[12.5px] font-semibold text-white shadow-sm">
           <RefreshCw size={14} aria-hidden /> {s.scanAll}
         </span>
       </PageHead>
@@ -21,18 +22,18 @@ export function SslView() {
             <p className="text-[12.5px] font-semibold">
               <span data-scan-label data-done={s.complete} data-busy={s.scanning}>{s.complete}</span>
             </p>
-            <p className="mono tabular text-[12px] text-muted">
+            <p className="mono tabular-nums text-[12px] text-muted">
               <span data-scan-count>0</span> / {sslScan.total}
             </p>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-line-2">
-            <div data-scan-bar className="h-full w-full origin-left rounded-full bg-gradient-to-r from-blue to-cyan" style={{ transform: 'scaleX(1)' }} />
+            <div data-scan-bar className="h-full w-full origin-left rounded-full bg-blue" style={{ transform: 'scaleX(1)' }} />
           </div>
         </div>
         <div className="grid flex-1 grid-cols-4 gap-2">
           {sslScan.summary.map((s) => (
             <div key={s.label} className="rounded-[10px] border border-line-2 bg-canvas px-3 py-2" data-reveal>
-              <p className="tabular text-[18px] font-semibold tracking-[-0.02em]">{s.value}</p>
+              <p className="tabular-nums text-[18px] font-semibold">{s.value}</p>
               <Pill status={s.status} className="!px-0 !bg-transparent">
                 {s.label}
               </Pill>
@@ -77,7 +78,7 @@ export function SslView() {
                   {r.expires}
                 </td>
                 <td
-                  className={`mono tabular py-[11px] text-right text-[11.5px] font-semibold ${r.status === 'bad' ? 'text-bad' : r.status === 'warn' ? 'text-warn' : 'text-ink-2'}`}
+                  className={cn('mono tabular-nums py-[11px] text-right text-[11.5px] font-semibold', r.status === 'bad' ? 'text-bad' : r.status === 'warn' ? 'text-warn' : 'text-ink-2')}
                   data-result
                 >
                   {r.days}

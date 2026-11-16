@@ -4,7 +4,7 @@ The public product site for Support Toolkit: a premium, light-mode scrollytellin
 dashboard demonstrates each module as the visitor scrolls.
 
 - **Live:** `https://support-toolkit.nl`
-- **Previous domain:** `toolkit.rubenmuller.nl`, redirects permanently to the new domain (see [docs/DOMAIN-MIGRATION.md](docs/DOMAIN-MIGRATION.md))
+- **Previous domain:** `toolkit.rubenmuller.nl` (removed; see [docs/DOMAIN-MIGRATION.md](docs/DOMAIN-MIGRATION.md))
 
 This repository holds the **marketing site only**. The Support Toolkit application (PHP, `Rubellioz/support-toolkit`)
 is a separate repository with its own deployment and is not changed by anything here.
@@ -92,6 +92,23 @@ Everything in the dashboard is an illustrative simulation from `src/data/`. Doma
 names, IPs come from documentation ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32) and the ASN is
 the documentation ASN 64500. The UI marks this with "Demo data" / "Demo mode" badges and a notice. The security score
 follows the application's real weighting method.
+
+## UI baseline
+
+The UI follows the [ui-skills](https://github.com/ibelick/ui-skills) rules `baseline-ui`, `fixing-accessibility`,
+`fixing-metadata` and `fixing-motion-performance`:
+
+- One accent colour (blue), no gradients or glow; Tailwind's default shadow scale and easing; no letter-spacing
+  changes (large headings get their tighter fit from Inter's optical-size axis).
+- Text colours meet WCAG AA (≥ 4.5:1); `text-balance` on headings, `text-pretty` on body copy, `tabular-nums` for data.
+- `cn()` (clsx + tailwind-merge) for conditional classes.
+- Mobile menu is a native HTML `popover` (Escape, light dismiss, focus return by the browser); icon buttons have an
+  `aria-label`; the fixed header respects the safe area.
+- Motion: only `transform`/`opacity` on large surfaces, `will-change` only while the tour is pinned, looping
+  animations pause off-screen, no scroll listeners outside GSAP ScrollTrigger.
+
+Deliberate deviations: GSAP stays the animation library (the skills say not to migrate libraries), and the pinned stage
+uses `100svh` instead of `h-dvh` so the pin doesn't re-layout when a mobile toolbar shows or hides.
 
 ## Deployment
 

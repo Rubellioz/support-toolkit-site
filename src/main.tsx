@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
-import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/inter/opsz.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 import '@fontsource/instrument-serif/latin-400-italic.css';
 import './styles/index.css';

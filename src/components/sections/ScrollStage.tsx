@@ -64,6 +64,7 @@ export function ScrollStage() {
     const ro = new ResizeObserver(measure);
     ro.observe(narrative);
 
+    const cleanups: (() => void)[] = [];
     const ctx = gsap.context(() => {
       /* ---------- camera ---------- */
       const cameraFor = (key: string | null) => {
@@ -244,6 +245,8 @@ export function ScrollStage() {
         start: 'top top',
         end: () => `+=${Math.round(tl.duration() * UNIT * window.innerHeight)}`,
         pin: true,
+        // will-change only while the stage is pinned and animating (fixing-motion-performance: layers).
+        onToggle: (self) => gsap.set([frame, camera], { willChange: self.isActive ? 'transform' : 'auto' }),
         scrub: 0.7,
         anticipatePin: 1,
         invalidateOnRefresh: true,
@@ -266,6 +269,11 @@ export function ScrollStage() {
       });
 
       stage.classList.add('is-ready');
+
+      // Pause looping CSS animations (spinner, live dot) while the stage is off-screen.
+      const io = new IntersectionObserver(([entry]) => stage.classList.toggle('is-offscreen', !entry.isIntersecting));
+      io.observe(stage);
+      cleanups.push(() => io.disconnect());
       document.fonts?.ready.then(() => ScrollTrigger.refresh());
 
       // Deep links (#ssl-monitor) land on the right chapter once the pin is measured.
@@ -277,6 +285,7 @@ export function ScrollStage() {
 
     return () => {
       ro.disconnect();
+      cleanups.forEach((fn) => fn());
       registerTourNavigator(null);
       registerCurrentAnchor(null);
       ctx.revert();
@@ -286,7 +295,6 @@ export function ScrollStage() {
 
   return (
     <section ref={root} id="top" className="stage relative h-[100svh] overflow-hidden bg-white" aria-labelledby="hero-title">
-      <StageBackdrop />
 
       <div data-hero className="absolute inset-x-0 top-[calc(var(--hdr)+5svh)] z-10">
         <HeroCopy />
@@ -296,7 +304,7 @@ export function ScrollStage() {
         <div className="mb-8 hidden gap-1.5 lg:flex" aria-hidden>
           {chapters.map((c) => (
             <span key={c.id} className="h-[3px] flex-1 overflow-hidden rounded-full bg-line">
-              <span data-rail className="block h-full w-full rounded-full bg-gradient-to-r from-blue to-cyan" />
+              <span data-rail className="block h-full w-full rounded-full bg-blue" />
             </span>
           ))}
         </div>
@@ -309,11 +317,11 @@ export function ScrollStage() {
         </div>
       </div>
 
-      <div data-frame className="stage-frame z-0 will-change-transform">
-        <div className="absolute inset-0 overflow-hidden rounded-[14px] bg-white shadow-[var(--shadow-frame)] ring-1 ring-ink/5 sm:rounded-[20px]" aria-hidden inert>
+      <div data-frame className="stage-frame z-0">
+        <div className="absolute inset-0 overflow-hidden rounded-[14px] bg-white shadow-2xl ring-1 ring-ink/5 sm:rounded-[20px]" aria-hidden inert>
           <div ref={fit} className="absolute inset-0">
             <div className="stage-fit">
-              <div data-camera className="will-change-transform">
+              <div data-camera>
                 <Dashboard />
               </div>
             </div>
@@ -322,19 +330,10 @@ export function ScrollStage() {
         <p className="absolute -bottom-7 left-0 right-0 hidden text-center text-[11.5px] text-subtle lg:block">{t.demoNoticeShort}</p>
       </div>
 
-      <div data-hint className="pointer-events-none absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-line bg-white/90 px-3.5 py-1.5 text-[12px] font-medium text-muted shadow-[var(--shadow-float)] backdrop-blur md:flex" aria-hidden>
+      <div data-hint className="pointer-events-none absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-[12px] font-medium text-muted shadow-lg md:flex" aria-hidden>
         <MousePointer2 size={14} /> {t.stage.hint}
       </div>
     </section>
   );
 }
 
-function StageBackdrop() {
-  return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgb(10_24_52/0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgb(10_24_52/0.045)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_30%,black,transparent)]" />
-      <div className="absolute -top-[20%] left-1/2 h-[70%] w-[80%] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(23_101_245/0.12),transparent)]" />
-      <div className="absolute right-[-10%] top-[35%] h-[60%] w-[50%] rounded-full bg-[radial-gradient(closest-side,rgb(11_180_216/0.10),transparent)]" />
-    </div>
-  );
-}

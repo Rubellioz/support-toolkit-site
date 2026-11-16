@@ -2,15 +2,8 @@ import { Globe, Server, MapPin, Copy } from 'lucide-react';
 import { getDomainLookup } from '../../../data/domain';
 import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, QueryBar, StatusIcon } from '../primitives';
+import { cn } from '../../../lib/cn';
 
-const typeColor: Record<string, string> = {
-  A: 'bg-blue-50 text-blue',
-  AAAA: 'bg-blue-50 text-blue',
-  CNAME: 'bg-cyan-50 text-[#0a8aa6]',
-  MX: 'bg-[#f1edff] text-[#5b46d6]',
-  TXT: 'bg-line-2 text-ink-2',
-  CAA: 'bg-ok-50 text-ok',
-};
 
 export function DomainView() {
   const d = getDomainLookup(useLang());
@@ -82,7 +75,7 @@ export function DomainView() {
                 {d.records.map((r, i) => (
                   <tr key={i} className="border-b border-line-2 last:border-0" data-reveal>
                     <td className="py-[7px] pl-4">
-                      <span className={`mono rounded-[6px] px-1.5 py-0.5 text-[10.5px] font-semibold ${typeColor[r.type]}`}>{r.type}</span>
+                      <span className={cn('mono rounded-[6px] px-1.5 py-0.5 text-[10.5px] font-semibold bg-line-2 text-ink-2')}>{r.type}</span>
                     </td>
                     <td className="mono py-[7px] text-[11.5px] text-muted">{r.name}</td>
                     <td className="py-[7px]">
@@ -105,7 +98,7 @@ export function DomainView() {
                 <span
                   key={p.resolver}
                   data-reveal
-                  className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${p.ok ? 'bg-ok-50 text-ok' : 'bg-warn-50 text-warn'}`}
+                  className={cn('flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium', p.ok ? 'bg-ok-50 text-ok' : 'bg-warn-50 text-warn')}
                 >
                   <span className="size-1.5 rounded-full bg-current" />
                   {p.resolver}

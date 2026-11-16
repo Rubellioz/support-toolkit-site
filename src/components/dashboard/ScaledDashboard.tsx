@@ -8,7 +8,7 @@ export function ScaledDashboard({ view }: { view: ViewId }) {
   const ref = useRef<HTMLDivElement>(null);
   useFitScale(ref, DASH_W);
   return (
-    <div ref={ref} className="relative aspect-[1280/800] w-full overflow-hidden rounded-[14px] bg-white shadow-[var(--shadow-frame)] sm:rounded-[20px]" aria-hidden inert>
+    <div ref={ref} className="relative aspect-[1280/800] w-full overflow-hidden rounded-[14px] bg-white shadow-2xl sm:rounded-[20px]" aria-hidden inert>
       <div className="stage-fit absolute left-0 top-0">
         <Dashboard only={view} />
       </div>

@@ -29,12 +29,9 @@ Only static files written at build time: `index.html` and `en/index.html` (canon
    ```bash
    npm run verify-dist
    ```
-6. **Redirects.** Once the new domain works, redirect the old host with its path intact:
-   - In Plesk, open **toolkit.rubenmuller.nl → Git** and set the deployment mode to **Disabled** (or remove the repository).
-   - In **File Manager**, empty the document root of `toolkit.rubenmuller.nl` and upload
-     [`docs/old-domain-redirect.htaccess`](old-domain-redirect.htaccess) there as **`.htaccess`**.
-   - Keep the subdomain and its certificate, so `https://toolkit.rubenmuller.nl/...` links keep working (they redirect).
-   - Set **Hosting Settings → Preferred domain** of `support-toolkit.nl` to `support-toolkit.nl` so `www.` redirects too.
+6. **Old domain.** `toolkit.rubenmuller.nl` was removed in Plesk (subdomain, Git repository and webhook) instead of
+   redirected. Set **Hosting Settings → Preferred domain** of `support-toolkit.nl` to `support-toolkit.nl` so `www.`
+   redirects to the main domain.
 7. **SEO & analytics.** Add `support-toolkit.nl` to Google Search Console, submit the sitemap, and use *Change of
    address* from the old property. Analytics picks up the new hostname automatically (`data-domain` is set at runtime);
    add the new domain in your analytics dashboard. If the analytics script lives on another host, ensure it is

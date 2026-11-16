@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 
 /* ---------------------------------------------------------------------------------
-   Design tokens — premium light. Navy ink, electric blue + cyan accents.
+   Design tokens — premium light. Navy ink, one accent (electric blue). Text colours meet WCAG AA (4.5:1)
+   on white and canvas. Shadows use Tailwind's default scale; easing uses Tailwind's defaults.
    --------------------------------------------------------------------------------- */
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -10,8 +11,8 @@
 
   --color-ink: #0a1834;
   --color-ink-2: #22324f;
-  --color-muted: #5b6a84;
-  --color-subtle: #8a96ab;
+  --color-muted: #4a5873;
+  --color-subtle: #606d86;
   --color-line: #e5e9f0;
   --color-line-2: #eef1f6;
   --color-canvas: #f5f7fa;
@@ -21,22 +22,13 @@
   --color-blue-600: #0f52d6;
   --color-blue-50: #eef4ff;
   --color-blue-100: #dbe7ff;
-  --color-cyan: #0bb4d8;
-  --color-cyan-50: #e8f8fc;
 
-  --color-ok: #109a5a;
+  --color-ok: #0b7a46;
   --color-ok-50: #e9f8f0;
-  --color-warn: #c98306;
+  --color-warn: #9a6200;
   --color-warn-50: #fdf5e4;
-  --color-bad: #dc3d43;
+  --color-bad: #c22d33;
   --color-bad-50: #fdeeee;
-
-  --shadow-card: 0 1px 2px rgb(10 24 52 / 0.04), 0 1px 1px rgb(10 24 52 / 0.03);
-  --shadow-float: 0 1px 2px rgb(10 24 52 / 0.05), 0 12px 32px -12px rgb(10 24 52 / 0.18);
-  --shadow-frame: 0 0 0 1px rgb(10 24 52 / 0.06), 0 2px 6px rgb(10 24 52 / 0.04),
-    0 40px 80px -24px rgb(16 46 110 / 0.28), 0 24px 48px -32px rgb(10 24 52 / 0.3);
-
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
@@ -54,6 +46,16 @@
     font-feature-settings: 'cv11', 'ss01', 'ss03';
     overflow-x: clip;
   }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
   ::selection {
     background: var(--color-blue-100);
     color: var(--color-ink);
@@ -70,26 +72,18 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-blue);
   }
   .display {
     font-weight: 650;
-    letter-spacing: -0.045em;
-    line-height: 0.98;
+    line-height: 1;
   }
   .serif-accent {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-  .text-gradient {
-    background: linear-gradient(100deg, var(--color-blue) 10%, var(--color-cyan) 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-blue);
   }
   .btn {
     display: inline-flex;
@@ -100,11 +94,9 @@
     border-radius: 999px;
     font-size: 0.925rem;
     font-weight: 550;
-    transition:
-      background-color 0.2s,
-      box-shadow 0.2s,
-      transform 0.2s var(--ease-out-expo),
-      color 0.2s;
+    transition-property: background-color, box-shadow, transform, color;
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-out);
   }
   .btn:active {
     transform: scale(0.98);
@@ -112,7 +104,7 @@
   .btn-primary {
     background: var(--color-ink);
     color: white;
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0.15) inset, 0 6px 16px -6px rgb(10 24 52 / 0.5);
+    box-shadow: var(--shadow-sm);
   }
   .btn-primary:hover {
     background: #13264a;
@@ -120,10 +112,10 @@
   .btn-secondary {
     background: white;
     color: var(--color-ink);
-    box-shadow: 0 0 0 1px var(--color-line) inset, var(--shadow-card);
+    box-shadow: 0 0 0 1px var(--color-line) inset, var(--shadow-xs);
   }
   .btn-secondary:hover {
-    box-shadow: 0 0 0 1px #cfd6e2 inset, var(--shadow-card);
+    box-shadow: 0 0 0 1px #cfd6e2 inset, var(--shadow-xs);
   }
   .sr-only-focusable:not(:focus) {
     position: absolute;
@@ -145,7 +137,7 @@
 }
 .is-ready .stage-frame {
   opacity: 1;
-  transition: opacity 0.6s var(--ease-out-expo);
+  transition: opacity 300ms var(--ease-out);
 }
 
 /* Dashboard internals */
@@ -158,23 +150,18 @@
 .dash .mono {
   font-family: var(--font-mono);
   font-size: 0.92em;
-  letter-spacing: -0.01em;
 }
 .dash-card {
   background: white;
   border: 1px solid var(--color-line);
   border-radius: 14px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-xs);
 }
 .dash-th {
   font-size: 11px;
   font-weight: 550;
   color: var(--color-subtle);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.tabular {
-  font-variant-numeric: tabular-nums;
 }
 
 @keyframes spin {
@@ -185,17 +172,19 @@
 .spin {
   animation: spin 0.9s linear infinite;
 }
+/* Compositor-only pulse (opacity), no box-shadow animation. */
 @keyframes pulse-dot {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgb(16 154 90 / 0.45);
-  }
   50% {
-    box-shadow: 0 0 0 5px rgb(16 154 90 / 0);
+    opacity: 0.35;
   }
 }
 .live-dot {
   animation: pulse-dot 2.2s ease-in-out infinite;
+}
+/* Looping animations pause while the pinned stage is off-screen (class set by an IntersectionObserver). */
+.is-offscreen .spin,
+.is-offscreen .live-dot {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
