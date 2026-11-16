@@ -1,27 +1,31 @@
 import { FileDown } from 'lucide-react';
-import { securityAudit as s } from '../../../data/security';
+import { getSecurityAudit, type Priority } from '../../../data/security';
+import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, StatusIcon } from '../primitives';
 
 export const RING_R = 64;
 export const RING_C = 2 * Math.PI * RING_R;
 
-const prioTone: Record<string, string> = {
-  High: 'bg-bad-50 text-bad',
-  Medium: 'bg-warn-50 text-warn',
-  Low: 'bg-blue-50 text-blue',
+const prioTone: Record<Priority, string> = {
+  high: 'bg-bad-50 text-bad',
+  medium: 'bg-warn-50 text-warn',
+  low: 'bg-blue-50 text-blue',
 };
 
 export function SecurityView() {
+  const s = getSecurityAudit(useLang());
+  const t = useT().dash;
+  const st = t.security;
   return (
     <div className="flex h-full flex-col">
-      <PageHead crumb="Security" title={<>Security Audit <span className="mono text-[15px] font-medium text-muted">· {s.host}</span></>}>
+      <PageHead crumb={t.nav.security.crumb} title={<>{t.nav.security.label} <span className="mono text-[15px] font-medium text-muted">· {s.host}</span></>}>
         <span className="flex h-9 items-center gap-2 rounded-[10px] border border-line bg-white px-3.5 text-[12.5px] font-semibold shadow-[var(--shadow-card)]">
-          <FileDown size={14} aria-hidden /> Export report
+          <FileDown size={14} aria-hidden /> {st.export}
         </span>
       </PageHead>
 
       <div className="grid min-h-0 flex-1 grid-cols-[380px_1fr] gap-3">
-        <Card title="Security score" action={<span className="text-[11.5px] text-subtle">38 checks · non-destructive</span>} data-focus="security-score">
+        <Card title={st.score} action={<span className="text-[11.5px] text-subtle">{st.scoreMeta}</span>} data-focus="security-score">
           <div className="flex items-center gap-5 px-5 pt-5">
             <div className="relative size-[150px] shrink-0">
               <svg viewBox="0 0 150 150" className="size-full -rotate-90" aria-hidden>
@@ -50,14 +54,14 @@ export function SecurityView() {
                   <p className="tabular text-[40px] font-semibold leading-none tracking-[-0.04em]" data-score-num>
                     {s.score}
                   </p>
-                  <p className="mt-1 text-[11px] text-subtle">out of 100</p>
+                  <p className="mt-1 text-[11px] text-subtle">{st.outOf}</p>
                 </div>
               </div>
             </div>
             <div>
               <Pill status="ok">{s.grade}</Pill>
               <p className="mt-2 text-[12px] leading-snug text-muted">
-                Weighted across six categories. A proven high risk would cap the total at 74.
+                {st.method}
               </p>
             </div>
           </div>
@@ -83,25 +87,25 @@ export function SecurityView() {
         </Card>
 
         <div className="flex min-w-0 flex-col gap-3">
-          <Card title="Check results" action={<span className="text-[11.5px] text-subtle">4 passed · 2 warnings · 1 failed</span>} data-focus="security-checks">
+          <Card title={st.checks} action={<span className="text-[11.5px] text-subtle">{st.checksMeta}</span>} data-focus="security-checks">
             <ul className="divide-y divide-line-2 px-4">
               {s.checks.map((c) => (
                 <li key={c.label} className="flex items-center gap-3 py-[9px]" data-reveal>
                   <StatusIcon status={c.status} size={15} />
                   <span className="text-[12px] font-medium">{c.label}</span>
-                  {c.risk && <span className={`ml-auto rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${prioTone[c.risk]}`}>{c.risk} risk</span>}
-                  {!c.risk && <span className="ml-auto text-[11.5px] text-subtle">Passed</span>}
+                  {c.risk && <span className={`ml-auto rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${prioTone[c.risk]}`}>{s.priorityLabel[c.risk]} {st.risk}</span>}
+                  {!c.risk && <span className="ml-auto text-[11.5px] text-subtle">{st.passed}</span>}
                 </li>
               ))}
             </ul>
           </Card>
-          <Card title="Recommendations" className="min-h-0 flex-1">
+          <Card title={st.recommendations} className="min-h-0 flex-1">
             <ol className="space-y-2 p-3">
               {s.recommendations.map((r, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-[10px] border border-line-2 bg-canvas px-3 py-2.5" data-reveal>
                   <span className="mono grid size-6 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold shadow-[var(--shadow-card)]">{i + 1}</span>
                   <span className="text-[12px] font-medium">{r.text}</span>
-                  <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${prioTone[r.priority]}`}>{r.priority}</span>
+                  <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${prioTone[r.priority]}`}>{s.priorityLabel[r.priority]}</span>
                 </li>
               ))}
             </ol>

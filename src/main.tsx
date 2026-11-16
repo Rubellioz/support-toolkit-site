@@ -6,11 +6,13 @@ import '@fontsource/instrument-serif/latin-400-italic.css';
 import './styles/index.css';
 import { App } from './App';
 import { site } from './config/site';
+import { langFromPath } from './i18n/lang';
 
 const container = document.getElementById('root')!;
+// "/" is Dutch, "/en/" is English. Each version is prerendered as its own page.
 const app = (
   <StrictMode>
-    <App />
+    <App lang={langFromPath(window.location.pathname)} />
   </StrictMode>
 );
 

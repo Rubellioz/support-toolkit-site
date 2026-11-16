@@ -4,9 +4,9 @@
 //   node scripts/retarget-domain.mjs https://support-toolkit.nl [distDir]
 //
 // The JS/CSS bundles never contain the site's own domain; only the static SEO files do
-// (index.html, 404.html, robots.txt, sitemap.xml). This rewrites exactly those.
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+// (index.html per language, robots.txt, sitemap.xml). This rewrites exactly those.
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, resolve, relative } from 'node:path';
 import { normalizeSiteUrl } from './seo.mjs';
 
 const [, , rawUrl, distArg = 'dist'] = process.argv;
@@ -27,10 +27,17 @@ if (current === next) {
   process.exit(0);
 }
 
-const targets = readdirSync(dist).filter((f) => /\.(html|txt|xml|webmanifest)$/.test(f));
+const targets = [];
+(function walk(dir) {
+  for (const f of readdirSync(dir)) {
+    const p = join(dir, f);
+    if (statSync(p).isDirectory()) walk(p);
+    else if (/\.(html|txt|xml|webmanifest)$/.test(f)) targets.push(p);
+  }
+})(dist);
 let changed = 0;
-for (const file of targets) {
-  const path = join(dist, file);
+for (const path of targets) {
+  const file = relative(dist, path);
   const before = readFileSync(path, 'utf8');
   const after = before.split(current).join(next);
   if (after !== before) {

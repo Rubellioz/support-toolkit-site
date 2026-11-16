@@ -1,17 +1,20 @@
 import { Link2, ArrowRight, Server, Code2, Layers, Activity } from 'lucide-react';
-import { websiteScan as w } from '../../../data/website';
+import { getWebsiteScan } from '../../../data/website';
+import { useLang, useT } from '../../../i18n/context';
 import { Card, PageHead, Pill, QueryBar, StatusIcon } from '../primitives';
 
 const factIcons = { http: Activity, cms: Layers, php: Code2, server: Server } as const;
 
 export function WebsiteView() {
+  const w = getWebsiteScan(useLang());
+  const t = useT().dash;
   return (
     <div className="flex h-full flex-col">
-      <PageHead crumb="Websites" title="Website Intelligence">
-        <QueryBar icon={<Link2 size={14} aria-hidden />} value={w.url} action="Analyse" />
+      <PageHead crumb={t.nav.website.crumb} title={t.nav.website.label}>
+        <QueryBar icon={<Link2 size={14} aria-hidden />} value={w.url} action={t.website.analyse} />
       </PageHead>
 
-      <Card title="Request chain" action={<span className="text-[11.5px] text-subtle">3 hops · 412 ms total</span>}>
+      <Card title={t.website.chain} action={<span className="text-[11.5px] text-subtle">{t.website.chainMeta}</span>}>
         <ol className="flex items-center gap-2 p-3">
           {w.chain.map((c, i) => (
             <li key={i} className="flex min-w-0 flex-1 items-center gap-2" data-reveal>
@@ -48,7 +51,7 @@ export function WebsiteView() {
       </div>
 
       <div className="mt-3 grid min-h-0 flex-1 grid-cols-[1.2fr_1fr] gap-3">
-        <Card title="Technical analysis" action={<Pill status="ok">5 of 6 healthy</Pill>}>
+        <Card title={t.website.analysis} action={<Pill status="ok">{t.website.healthy}</Pill>}>
           <ul className="divide-y divide-line-2 px-4">
             {w.analysis.map((a) => (
               <li key={a.label} className="flex items-center gap-3 py-[9px]" data-reveal>
@@ -59,7 +62,7 @@ export function WebsiteView() {
             ))}
           </ul>
         </Card>
-        <Card title="Rendered preview" action={<span className="text-[11.5px] text-subtle">1440 × 900</span>}>
+        <Card title={t.website.preview} action={<span className="text-[11.5px] text-subtle">1440 × 900</span>}>
           <div className="flex-1 p-3" data-reveal>
             <div className="h-full overflow-hidden rounded-[10px] border border-line bg-white">
               <div className="flex items-center gap-1.5 border-b border-line-2 bg-canvas px-2.5 py-1.5">

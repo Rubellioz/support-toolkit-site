@@ -1,18 +1,20 @@
-import { chapters } from '../../data/chapters';
-import { DEMO_NOTICE } from '../../data/types';
+import { getChapters } from '../../data/chapters';
+import { useLang, useT } from '../../i18n/context';
 import { ScaledDashboard } from '../dashboard/ScaledDashboard';
 import { ChapterText } from './ChapterText';
 import { HeroCopy } from './HeroCopy';
 
 /** Reduced-motion variant: same story and product views, no pinning, scrubbing or camera moves. */
 export default function StaticTour() {
+  const t = useT();
+  const chapters = getChapters(useLang());
   return (
     <>
       <section id="top" className="relative bg-white px-4 pb-16 pt-28 sm:px-8" aria-labelledby="hero-title">
         <HeroCopy />
         <div className="mx-auto mt-14 max-w-[1180px]">
           <ScaledDashboard view="overview" />
-          <p className="mt-3 text-center text-[12px] text-subtle">{DEMO_NOTICE}</p>
+          <p className="mt-3 text-center text-[12px] text-subtle">{t.demoNotice}</p>
         </div>
       </section>
       {chapters.map((c, i) => (

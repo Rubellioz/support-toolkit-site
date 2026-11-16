@@ -9,6 +9,24 @@ dashboard demonstrates each module as the visitor scrolls.
 This repository holds the **marketing site only**. The Support Toolkit application (PHP, `Rubellioz/support-toolkit`)
 is a separate repository with its own deployment and is not changed by anything here.
 
+## Languages
+
+The site is bilingual. **Dutch is the default at `/`**, **English lives at `/en/`**. Each language is a separate,
+prerendered page with its own `<html lang>`, title, description, canonical URL, `hreflang` alternates and Open Graph
+image, and both are listed in `sitemap.xml`. The NL | EN switch in the header links to the other page and keeps the
+visitor's place (it carries the anchor of the chapter on screen, e.g. `/en/#security-audit`).
+
+| What | Where |
+|---|---|
+| Interface copy (header, hero, CTA, footer, dashboard labels, SEO meta) | `src/i18n/messages.ts` (`en` defines the shape; `nl` must match, enforced by TypeScript) |
+| Chapter copy of the tour | `src/data/chapters.ts` |
+| Demo datasets (labels, dates) | `src/data/*.ts`, one `en` / `nl` variant each |
+| Language helpers and routing | `src/i18n/lang.ts` |
+| `<head>` per language | `src/seo/head.ts` |
+
+To add a language: add it to `Lang`/`LANGS`/`langPath` in `src/i18n/lang.ts`, add a messages object and data
+variants (TypeScript points out every missing string), and add the page to `PAGES` in `scripts/seo.mjs`.
+
 ## Stack
 
 Vite · React 19 · TypeScript · Tailwind CSS 4 · GSAP + ScrollTrigger · Lucide icons · self-hosted fonts (Inter,
@@ -31,7 +49,7 @@ All configuration is environment-based (`.env`, documented in [.env.example](.en
 
 | Variable | Purpose |
 |---|---|
-| `VITE_SITE_URL` | Public URL of this site. **The only place the domain is set.** Feeds canonical, Open Graph, JSON-LD, `robots.txt`, `sitemap.xml`. |
+| `VITE_SITE_URL` | Public URL of this site. **The only place the domain is set.** Feeds canonical, `hreflang`, Open Graph, JSON-LD, `robots.txt`, `sitemap.xml` for both languages. |
 | `VITE_APP_URL` | Sign-in link to the Support Toolkit application. Empty hides the buttons. |
 | `VITE_CONTACT_EMAIL` | Optional "Request access" button. |
 | `VITE_ANALYTICS_SRC` | Optional analytics script; the tracked domain is read from the browser at runtime. |
@@ -46,6 +64,8 @@ domain `support-toolkit.nl` appears anywhere while it is not the active domain.
 ```
 src/
   config/site.ts            external integrations (env)
+  i18n/                     languages, interface copy (nl + en), formatting
+  seo/head.ts               per-language <head> tags
   data/                     ALL demo data + chapter copy (no JSX)
   components/dashboard/     the product UI: shell, primitives, one file per view
   components/sections/      ScrollStage (pinned GSAP timeline), StaticTour (reduced motion), header, CTA, footer

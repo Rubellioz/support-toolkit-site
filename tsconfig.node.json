@@ -11,7 +11,8 @@
     "noEmit": true,
     "types": [
       "node"
-    ]
+    ],
+    "allowImportingTsExtensions": true
   },
   "include": [
     "vite.config.ts"
