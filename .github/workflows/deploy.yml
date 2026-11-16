@@ -1,0 +1,47 @@
+# Builds the site and publishes dist/ to the `deploy` branch.
+# Plesk (Git → "deploy" branch → document root) pulls that branch, so the server never needs Node.
+name: Build & publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Optional override: Settings → Secrets and variables → Actions → Variables → SITE_URL.
+      # Leave unset to use VITE_SITE_URL from .env.
+      - name: Build
+        run: |
+          if [ -n "$SITE_URL" ]; then export VITE_SITE_URL="$SITE_URL"; fi
+          npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      - name: Publish dist/ to the deploy branch
+        run: |
+          cd dist
+          git init -q -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" deploy

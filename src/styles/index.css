@@ -1,0 +1,271 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------------
+   Design tokens — premium light. Navy ink, electric blue + cyan accents.
+   --------------------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --color-ink: #0a1834;
+  --color-ink-2: #22324f;
+  --color-muted: #5b6a84;
+  --color-subtle: #8a96ab;
+  --color-line: #e5e9f0;
+  --color-line-2: #eef1f6;
+  --color-canvas: #f5f7fa;
+  --color-surface: #ffffff;
+
+  --color-blue: #1765f5;
+  --color-blue-600: #0f52d6;
+  --color-blue-50: #eef4ff;
+  --color-blue-100: #dbe7ff;
+  --color-cyan: #0bb4d8;
+  --color-cyan-50: #e8f8fc;
+
+  --color-ok: #109a5a;
+  --color-ok-50: #e9f8f0;
+  --color-warn: #c98306;
+  --color-warn-50: #fdf5e4;
+  --color-bad: #dc3d43;
+  --color-bad-50: #fdeeee;
+
+  --shadow-card: 0 1px 2px rgb(10 24 52 / 0.04), 0 1px 1px rgb(10 24 52 / 0.03);
+  --shadow-float: 0 1px 2px rgb(10 24 52 / 0.05), 0 12px 32px -12px rgb(10 24 52 / 0.18);
+  --shadow-frame: 0 0 0 1px rgb(10 24 52 / 0.06), 0 2px 6px rgb(10 24 52 / 0.04),
+    0 40px 80px -24px rgb(16 46 110 / 0.28), 0 24px 48px -32px rgb(10 24 52 / 0.3);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-blue-100);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+  .display {
+    font-weight: 650;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+  .serif-accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .text-gradient {
+    background: linear-gradient(100deg, var(--color-blue) 10%, var(--color-cyan) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding: 0 1.15rem;
+    border-radius: 999px;
+    font-size: 0.925rem;
+    font-weight: 550;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s,
+      transform 0.2s var(--ease-out-expo),
+      color 0.2s;
+  }
+  .btn:active {
+    transform: scale(0.98);
+  }
+  .btn-primary {
+    background: var(--color-ink);
+    color: white;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.15) inset, 0 6px 16px -6px rgb(10 24 52 / 0.5);
+  }
+  .btn-primary:hover {
+    background: #13264a;
+  }
+  .btn-secondary {
+    background: white;
+    color: var(--color-ink);
+    box-shadow: 0 0 0 1px var(--color-line) inset, var(--shadow-card);
+  }
+  .btn-secondary:hover {
+    box-shadow: 0 0 0 1px #cfd6e2 inset, var(--shadow-card);
+  }
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* ---------------------------------------------------------------------------------
+   Scroll stage — pre-JS state. GSAP reveals the frame once the timeline is measured,
+   so the prerendered HTML never flashes the dashboard in the wrong position.
+   --------------------------------------------------------------------------------- */
+.stage-frame,
+.stage-narrative {
+  opacity: 0;
+}
+.is-ready .stage-frame {
+  opacity: 1;
+  transition: opacity 0.6s var(--ease-out-expo);
+}
+
+/* Dashboard internals */
+.dash {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.dash .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  letter-spacing: -0.01em;
+}
+.dash-card {
+  background: white;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.dash-th {
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--color-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(16 154 90 / 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgb(16 154 90 / 0);
+  }
+}
+.live-dot {
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .stage-frame,
+  .stage-narrative {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------------
+   Pinned stage geometry. The stage is a size container, so the frame can be sized in
+   cqw/cqh against the stage itself (no scrollbar-width surprises, no horizontal overflow).
+   --nt = measured height of the narrative block on small screens (set from JS).
+   --------------------------------------------------------------------------------- */
+.stage {
+  container-type: size;
+  --hdr: 68px;
+  --nt: 260px;
+}
+.stage-frame {
+  position: absolute;
+  --gap: 16px;
+  --fw: min(calc(100cqw - 32px), calc((100cqh - var(--hdr) - var(--nt) - 3 * var(--gap)) * 1.6));
+  width: var(--fw);
+  height: calc(var(--fw) / 1.6);
+  left: calc((100cqw - var(--fw)) / 2);
+  top: calc(var(--hdr) + var(--nt) + var(--gap) + (100cqh - var(--hdr) - var(--nt) - 2 * var(--gap) - var(--fw) / 1.6) / 2);
+}
+.stage-narrative {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(var(--hdr) + 8px);
+}
+@media (min-width: 640px) {
+  .stage-frame {
+    --fw: min(calc(100cqw - 64px), calc((100cqh - var(--hdr) - var(--nt) - 3 * var(--gap)) * 1.6));
+  }
+  .stage-narrative {
+    left: 32px;
+    right: 32px;
+  }
+}
+@media (min-width: 1024px) {
+  .stage-frame {
+    --fw: min(60cqw, calc((100cqh - var(--hdr) - 64px) * 1.6));
+    left: calc(37.5cqw + (60.5cqw - var(--fw)) / 2);
+    top: calc(var(--hdr) + (100cqh - var(--hdr) - var(--fw) / 1.6) / 2);
+  }
+  .stage-narrative {
+    left: 4.5cqw;
+    right: auto;
+    width: 30cqw;
+    top: var(--hdr);
+    bottom: 0;
+    display: grid;
+    align-content: center;
+  }
+}
+.stage-fit {
+  width: 1280px;
+  height: 800px;
+  transform: scale(var(--fit, 0.5));
+  transform-origin: 0 0;
+}
