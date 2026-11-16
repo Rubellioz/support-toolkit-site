@@ -9,12 +9,11 @@ export function FinalCta() {
   const c = t.cta;
   return (
     <section id="get-started" className="relative overflow-hidden border-t border-line-2 bg-canvas px-4 py-24 sm:px-8 lg:py-32" aria-labelledby="cta-title">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(23_101_245/0.10),transparent)]" aria-hidden />
       <div className="relative mx-auto max-w-[1180px]">
         <div className="mx-auto max-w-[760px] text-center">
           <p className="eyebrow">{c.eyebrow}</p>
           <h2 id="cta-title" className="display mt-4 text-[clamp(2.2rem,5.4vw,4.4rem)]">
-            {c.title} <span className="serif-accent text-gradient pr-[0.06em] text-[1.06em]">{c.accent}</span>
+            {c.title} <span className="serif-accent pr-[0.06em] text-[1.06em]">{c.accent}</span>
           </h2>
           <p className="mx-auto mt-5 max-w-[520px] text-[1.05rem] leading-relaxed text-muted">
             {c.body}
@@ -42,11 +41,11 @@ export function FinalCta() {
           {c.principles.map(({ title, text }, i) => {
             const Icon = principleIcons[i];
             return (
-            <li key={title} className="rounded-[20px] border border-line bg-white p-6 shadow-[var(--shadow-card)]">
+            <li key={title} className="rounded-[20px] border border-line bg-white p-6 shadow-xs">
               <span className="grid size-10 place-items-center rounded-[12px] bg-blue-50 text-blue">
                 <Icon size={19} aria-hidden />
               </span>
-              <h3 className="mt-5 text-[1.05rem] font-semibold tracking-[-0.02em]">{title}</h3>
+              <h3 className="mt-5 text-[1.05rem] font-semibold">{title}</h3>
               <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">{text}</p>
             </li>
             );

@@ -6,7 +6,7 @@ const en = {
   meta: {
     title: 'Support Toolkit — Support smarter. Work faster.',
     description:
-      'Support Toolkit brings domain intelligence, SSL monitoring, website diagnostics, security audits and domain mediation together in one fast workspace for hosting support teams.',
+      'Domain intelligence, SSL monitoring, website diagnostics, security audits and domain mediation in one fast workspace for hosting support teams.',
     ogDescription: 'Domain intelligence, SSL monitoring, website diagnostics, security audits and domain mediation in one workspace.',
     ogImageAlt: 'The Support Toolkit dashboard',
   },
@@ -160,7 +160,7 @@ const nl: Messages = {
   meta: {
     title: 'Support Toolkit — Slimmer supporten. Sneller werken.',
     description:
-      'Support Toolkit brengt domeininformatie, SSL-monitoring, websitediagnose, security audits en domeinbemiddeling samen in één snelle werkplek voor hostingsupportteams.',
+      'Domeininformatie, SSL-monitoring, websitediagnose, security audits en domeinbemiddeling in één snelle werkplek voor hostingsupportteams.',
     ogDescription: 'Domeininformatie, SSL-monitoring, websitediagnose, security audits en domeinbemiddeling in één werkplek.',
     ogImageAlt: 'Het dashboard van Support Toolkit',
   },

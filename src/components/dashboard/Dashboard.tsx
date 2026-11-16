@@ -8,6 +8,7 @@ import { SslView } from './views/SslView';
 import { WebsiteView } from './views/WebsiteView';
 import { SecurityView } from './views/SecurityView';
 import { MediationView } from './views/MediationView';
+import { cn } from '../../lib/cn';
 
 /** Native design size. The dashboard is always laid out at this size and scaled to fit its frame. */
 export const DASH_W = 1280;
@@ -39,22 +40,22 @@ export function Dashboard({ only }: { only?: ViewId }) {
         <div className="flex items-center gap-2.5 px-2 pb-5">
           <img src="/icon-192.png" alt="" width={28} height={28} className="size-7 rounded-[8px]" />
           <div className="leading-tight">
-            <p className="text-[13.5px] font-semibold tracking-[-0.02em]">Support Toolkit</p>
+            <p className="text-[13.5px] font-semibold">Support Toolkit</p>
             <p className="text-[11px] text-subtle">{t.workspaceName}</p>
           </div>
         </div>
-        <p className="px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-subtle">{t.workspace}</p>
+        <p className="px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase text-subtle">{t.workspace}</p>
         <nav className="relative flex flex-col">
           <span
             data-nav-indicator
-            className="absolute left-0 top-0 h-[34px] w-full rounded-[9px] border border-line bg-white shadow-[var(--shadow-card)]"
+            className="absolute left-0 top-0 h-[34px] w-full rounded-[9px] border border-line bg-white shadow-xs"
             style={{ transform: `translateY(${navItems.findIndex((n) => n.view === active) * 36}px)` }}
           />
           {navItems.map(({ view, icon: Icon }) => (
             <span
               key={view}
               data-nav-item={view}
-              className={`relative flex h-[34px] items-center gap-2.5 rounded-[9px] px-2.5 text-[12.5px] font-medium ${view === active ? 'text-ink' : 'text-muted'}`}
+              className={cn('relative flex h-[34px] items-center gap-2.5 rounded-[9px] px-2.5 text-[12.5px] font-medium', view === active ? 'text-ink' : 'text-muted')}
               style={{ marginBottom: 2 }}
             >
               <Icon size={15} strokeWidth={2} aria-hidden className={view === active ? 'text-blue' : ''} data-nav-icon />
@@ -62,14 +63,14 @@ export function Dashboard({ only }: { only?: ViewId }) {
             </span>
           ))}
         </nav>
-        <p className="mt-6 px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-subtle">{t.tools}</p>
+        <p className="mt-6 px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase text-subtle">{t.tools}</p>
         {[Users, StickyNote, Settings].map((Icon, i) => ({ Icon, label: t.toolItems[i] })).map(({ Icon, label }) => (
           <span key={label} className="flex h-[32px] items-center gap-2.5 px-2.5 text-[12.5px] font-medium text-muted">
             <Icon size={15} strokeWidth={2} aria-hidden />
             {label}
           </span>
         ))}
-        <div className="mt-auto rounded-[12px] border border-line bg-gradient-to-br from-blue-50 to-cyan-50 p-3">
+        <div className="mt-auto rounded-[12px] border border-line bg-blue-50 p-3">
           <p className="flex items-center gap-1.5 text-[11.5px] font-semibold text-blue">
             <FlaskConical size={13} aria-hidden /> {t.demoModeTitle}
           </p>
@@ -104,7 +105,7 @@ export function Dashboard({ only }: { only?: ViewId }) {
             <span className="absolute right-2 top-2 size-1.5 rounded-full bg-bad" />
           </span>
           <span className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-full bg-gradient-to-br from-blue to-cyan text-[11px] font-semibold text-white">ST</span>
+            <span className="grid size-8 place-items-center rounded-full bg-blue text-[11px] font-semibold text-white">ST</span>
             <ChevronDown size={14} className="text-subtle" aria-hidden />
           </span>
         </header>
